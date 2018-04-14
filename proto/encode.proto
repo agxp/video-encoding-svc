@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package cloudflix.api.video_encode;
+
+service Encode {
+    rpc Encode(Request) returns (Response) {}
+}
+
+message Request {
+    string video_id = 1;
+}
+
+message Response {
+    repeated string filenames = 1;
+}
