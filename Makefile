@@ -31,7 +31,7 @@ run:
 		video-encode
 
 deploy:
-	docker push agxp/video-encode-svc
+	docker push agxp/video-encoding-svc
 	sed "s/{{ UPDATED_AT }}/$(shell date)/g" ./deployments/deployment.tmpl > ./deployments/deployment.yaml
 	kubectl apply -f ./deployments/deployment.yaml
 

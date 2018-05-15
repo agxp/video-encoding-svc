@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "github.com/agxp/cloudflix/video-upload-svc/proto"
+	pb "github.com/agxp/cloudflix/video-encoding-svc/proto"
 	"github.com/minio/minio-go"
 	"log"
 	"os"
@@ -9,17 +9,24 @@ import (
 )
 
 type Repository interface {
-	S3Request(filename string) (*pb.Response, error)
+	Encode(video_id string) (*pb.Response, error)
 }
 
-type UploadRepository struct {
+type EncodeRepository struct {
 	s3 *minio.Client
 }
 
-func (repo *UploadRepository) S3Request(filename string) (*pb.Response, error) {
+func (repo *EncodeRepository) Encode(video_id string) (*pb.Response, error) {
 	log.SetOutput(os.Stdout)
 	var res *pb.Response
-	log.Println("filename: ", filename)
+	log.Println("video_id: ", video_id)
+	tmpPath := "/tmp/" + video_id
+	tempVideo, err := repo.s3.FGetObject("videos", video_id, tmpPath)
+	if err != nil {
+		log.Fatalln(err)
+		return nil, er
+	}
+	
 	presignedURL, err := repo.s3.PresignedPutObject("videos", filename, time.Duration(1000)*time.Second)
 	if err != nil {
 		log.Fatalln(filename)

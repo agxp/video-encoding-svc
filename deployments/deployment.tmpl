@@ -1,23 +1,23 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: video-upload
+  name: video-encode
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: video-upload
+      app: video-encode
   template:
     metadata:
       labels:
-        app: video-upload
+        app: video-encode
     spec:
         containers:
-        - name: video-upload
-          image: video-upload
+        - name: video-encode
+          image: video-encode
           imagePullPolicy: Never
           command: [
-            "./video-upload-svc",
+            "./video-encoding-svc",
             "--selector=static",
             "--server_address=:8080",
             "--broker_address=:10001"

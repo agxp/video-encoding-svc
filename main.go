@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	pb "github.com/agxp/cloudflix/video-encode-svc/proto"
+	pb "github.com/agxp/cloudflix/video-encoding-svc/proto"
 	"github.com/micro/go-micro"
 	k8s "github.com/micro/kubernetes/go/micro"
 )
@@ -35,7 +35,7 @@ func main() {
 	// publisher := micro.NewPublisher("user.created", srv.Client())
 
 	// Register handler
-	pb.RegisterUploadHandler(srv.Server(), &service{repo})
+	pb.RegisterEncodeHandler(srv.Server(), &service{repo})
 
 	// Run the server
 	if err := srv.Run(); err != nil {
