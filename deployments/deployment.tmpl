@@ -1,36 +1,66 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: video-encode
+  name: encoder
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: video-encode
+      app: encoder
   template:
     metadata:
       labels:
-        app: video-encode
+        app: encoder
+      annotations:
+        prometheus.io/scrape: "true"
     spec:
         containers:
-        - name: video-encode
-          image: video-encode
+        - name: encoder
+          image: encoder
           imagePullPolicy: Never
-          command: [
-            "./video-encoding-svc",
-            "--selector=static",
-            "--server_address=:8080",
-            "--broker_address=:10001"
-          ]
+          securityContext:
+            privileged: true
           env:
           - name: MINIO_URL
-            value: "minio-0:9000"
+            value: "{{ MINIO_URL }}"
           - name: MINIO_ACCESS_KEY
             value: "minio"
           - name: MINIO_SECRET_KEY
             value: "minio123"
+          - name: PG_HOST
+            value: "postgres-postgresql"
+          - name: PG_USER
+            value: "postgres"
+          - name: PG_PASSWORD
+            value: "postgres123"
+          - name: REDIS_HOST
+            value: "redis:6379"
+          - name: REDIS_PASSWORD
+            value: ""
           - name: UPDATED_AT
             value: "{{ UPDATED_AT }}"
+          - name:  MICRO_REGISTRY
+            value:  kubernetes
+          - name: MICRO_SELECTOR
+            value: cache
+          - name: MICRO_SERVER_ADDRESS
+            value: 0.0.0.0:8080
+          - name: MICRO_BROKER_ADDRESS
+            value: 0.0.0.0:10001
+          - name: JAEGER_SERVICE_NAME
+            value: video-encoding-svc
+          - name: JAEGER_AGENT_HOST
+            value: jaeger-agent
+          - name: JAEGER_SAMPLER_TYPE
+            value: const
+          - name: JAEGER_SAMPLER_PARAM
+            value: "1"
+          - name: JAEGER_REPORTER_LOG_SPANS
+            value: "true"
+          - name: OPENTRACING_METRICS_EXPORTER_HTTP_PATH
+            value: "/metrics"
           ports:
-          - containerPort: 8080
-            name: upload-port
+          - name: hosting-port
+            containerPort: 8080
+          - name: prometheus
+            containerPort: 9090

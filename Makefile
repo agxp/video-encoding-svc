@@ -4,18 +4,18 @@ production: build deploy
 
 build:
 	rm -f ./bin/*
-	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/encode.proto
+	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/host.proto
 	go get
-	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/video_encode -installsuffix cgo .
-	docker build -t agxp/video_encode .
+	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/encoder -installsuffix cgo .
+	docker build -t agxp/video-encoding-svc .
 
 build-local:
 	rm -f ./bin/*
-	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/encode.proto
+	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/host.proto
 	go get
-	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/video_encode -installsuffix cgo .
+	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/encoder -installsuffix cgo .
 	@eval $$(minikube docker-env) ;\
-	docker build -t video_encode .
+	docker build -t encoder .
 
 run:
 	docker run --net="host" \
@@ -28,7 +28,7 @@ run:
 		-e MINIO_URL=minio-0 \
 		-e MINIO_ACCESS_KEY=minio \
 		-e MINIO_SECRET_KEY=minio123 \
-		video-encode
+		encoder
 
 deploy:
 	docker push agxp/video-encoding-svc
@@ -36,5 +36,7 @@ deploy:
 	kubectl apply -f ./deployments/deployment.yaml
 
 deploy-local:
-	sed "s/{{ UPDATED_AT }}/$(shell date)/g" ./deployments/deployment.tmpl > ./deployments/deployment.yaml
+	sed "s,{{ MINIO_URL }},$(shell minikube service minio --url),g" ./deployments/deployment.tmpl | sed "s,http://,,g" > ./deployments/deployment.tmpl1
+	sed "s/{{ UPDATED_AT }}/$(shell date)/g" ./deployments/deployment.tmpl1 > ./deployments/deployment.yaml
 	kubectl apply -f ./deployments/deployment.yaml
+	kubectl apply -f ./deployments/service.yaml

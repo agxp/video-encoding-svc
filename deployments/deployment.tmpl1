@@ -38,7 +38,7 @@ spec:
           - name: REDIS_PASSWORD
             value: ""
           - name: UPDATED_AT
-            value: "Fri Jun  1 18:31:01 PDT 2018"
+            value: "{{ UPDATED_AT }}"
           - name:  MICRO_REGISTRY
             value:  kubernetes
           - name: MICRO_SELECTOR

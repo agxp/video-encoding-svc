@@ -4,6 +4,6 @@ RUN apk --no-cache add ca-certificates
 
 RUN mkdir /app
 WORKDIR /app
-COPY ./bin/video_encode .
+COPY ./bin/encoder .
 
-CMD ["./video_encode"]
+CMD ["./encoder"]
