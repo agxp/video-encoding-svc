@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: video-host
+  name: encoder
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: video-host
+      app: encoder
   template:
     metadata:
       labels:
-        app: video-host
+        app: encoder
       annotations:
         prometheus.io/scrape: "true"
     spec:
         containers:
-        - name: video-host
-          image: video_host
+        - name: encoder
+          image: encoder
           imagePullPolicy: Never
           securityContext:
             privileged: true
@@ -38,7 +38,7 @@ spec:
           - name: REDIS_PASSWORD
             value: ""
           - name: UPDATED_AT
-            value: "Fri Jun  1 18:31:01 PDT 2018"
+            value: "Sat Jun  2 15:05:23 PDT 2018"
           - name:  MICRO_REGISTRY
             value:  kubernetes
           - name: MICRO_SELECTOR
@@ -48,7 +48,7 @@ spec:
           - name: MICRO_BROKER_ADDRESS
             value: 0.0.0.0:10001
           - name: JAEGER_SERVICE_NAME
-            value: video-hosting-svc
+            value: video-encoding-svc
           - name: JAEGER_AGENT_HOST
             value: jaeger-agent
           - name: JAEGER_SAMPLER_TYPE

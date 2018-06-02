@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cloudflix.api.video_encode;
+package encoder;
 
 service Encode {
     rpc Encode(Request) returns (Response) {}

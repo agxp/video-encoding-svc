@@ -2,7 +2,7 @@
 // source: proto/encode.proto
 
 /*
-Package cloudflix_api_video_encode is a generated protocol buffer package.
+Package encoder is a generated protocol buffer package.
 
 It is generated from these files:
 	proto/encode.proto
@@ -11,7 +11,7 @@ It has these top-level messages:
 	Request
 	Response
 */
-package cloudflix_api_video_encode
+package encoder
 
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
@@ -55,7 +55,7 @@ func NewEncodeClient(serviceName string, c client.Client) EncodeClient {
 		c = client.NewClient()
 	}
 	if len(serviceName) == 0 {
-		serviceName = "cloudflix.api.video_encode"
+		serviceName = "encoder"
 	}
 	return &encodeClient{
 		c:           c,

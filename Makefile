@@ -4,14 +4,14 @@ production: build deploy
 
 build:
 	rm -f ./bin/*
-	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/host.proto
+	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/encode.proto
 	go get
 	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/encoder -installsuffix cgo .
 	docker build -t agxp/video-encoding-svc .
 
 build-local:
 	rm -f ./bin/*
-	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/host.proto
+	protoc --proto_path=${GOPATH}/src --micro_out=. --go_out=. -I. proto/encode.proto
 	go get
 	CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/encoder -installsuffix cgo .
 	@eval $$(minikube docker-env) ;\

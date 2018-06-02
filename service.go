@@ -15,7 +15,7 @@ type service struct {
 }
 
 
-func (srv *service) Encoder(ctx context.Context, req *pb.Request, res *pb.Response) error {
+func (srv *service) Encode(ctx context.Context, req *pb.Request, res *pb.Response) error {
 	sp, _ := opentracing.StartSpanFromContext(ctx, "Encoder_Service")
 
 	logger.Info("Request for Encode_Service received")
