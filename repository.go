@@ -38,6 +38,7 @@ func (repo *EncodeRepository) GenerateThumb(video_id string, video_path string) 
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	trans.MediaFile().SetFrameRate(1)
@@ -48,11 +49,13 @@ func (repo *EncodeRepository) GenerateThumb(video_id string, video_path string) 
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -73,10 +76,11 @@ func (repo *EncodeRepository) Encode144p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_144.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath )
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath )
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	trans.MediaFile().SetVideoCodec("libx264")
 	trans.MediaFile().SetPreset("veryfast")
@@ -88,11 +92,13 @@ func (repo *EncodeRepository) Encode144p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -102,7 +108,7 @@ func (repo *EncodeRepository) Encode144p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 }
 
 func (repo *EncodeRepository) Encode240p(video_id string, video_path string) {
@@ -112,10 +118,11 @@ func (repo *EncodeRepository) Encode240p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_240.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath )
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath )
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	trans.MediaFile().SetVideoCodec("libx264")
 	trans.MediaFile().SetPreset("veryfast")
@@ -127,11 +134,13 @@ func (repo *EncodeRepository) Encode240p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -141,7 +150,7 @@ func (repo *EncodeRepository) Encode240p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 
 }
 
@@ -152,10 +161,11 @@ func (repo *EncodeRepository) Encode360p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_360.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath )
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath )
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	trans.MediaFile().SetVideoCodec("libx264")
 	trans.MediaFile().SetPreset("veryfast")
@@ -167,11 +177,13 @@ func (repo *EncodeRepository) Encode360p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -181,7 +193,7 @@ func (repo *EncodeRepository) Encode360p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 
 }
 
@@ -192,10 +204,11 @@ func (repo *EncodeRepository) Encode480p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_480.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath)
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath)
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	trans.MediaFile().SetVideoCodec("libx264")
 	trans.MediaFile().SetPreset("veryfast")
@@ -207,11 +220,13 @@ func (repo *EncodeRepository) Encode480p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -221,7 +236,7 @@ func (repo *EncodeRepository) Encode480p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 
 }
 
@@ -232,10 +247,11 @@ func (repo *EncodeRepository) Encode720p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_720.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath )
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath )
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	trans.MediaFile().SetVideoCodec("libx264")
 	trans.MediaFile().SetPreset("veryfast")
@@ -247,11 +263,13 @@ func (repo *EncodeRepository) Encode720p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -261,7 +279,7 @@ func (repo *EncodeRepository) Encode720p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 
 }
 
@@ -272,10 +290,11 @@ func (repo *EncodeRepository) Encode1080p(video_id string, video_path string) {
 	outputVideoPath := video_id + "_1080.mp4"
 
 	// Initialize transcoder passing the input file path and output file path
-	err := trans.Initialize( video_path, "/tmp/" + outputVideoPath )
+	err := trans.Initialize( video_path, "/app/" + outputVideoPath )
 	// Handle error...
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	trans.MediaFile().SetVideoCodec("libx264")
@@ -288,11 +307,13 @@ func (repo *EncodeRepository) Encode1080p(video_id string, video_path string) {
 	done, err := trans.Run()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	progress, err := trans.Output()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	for msg := range progress {
@@ -302,7 +323,7 @@ func (repo *EncodeRepository) Encode1080p(video_id string, video_path string) {
 	// This channel is used to wait for the process to end
 	<-done
 
-	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/tmp/" + outputVideoPath, minio.PutObjectOptions{})
+	repo.s3.FPutObject("videos", video_id + "/" + outputVideoPath, "/app/" + outputVideoPath, minio.PutObjectOptions{})
 
 }
 
@@ -337,7 +358,7 @@ func (repo *EncodeRepository) Encode(ctx context.Context, request *pb.Request) (
 
 	sp.LogKV("file_path", file_path)
 
-	video_path := "/tmp/" + video_id
+	video_path := "/app/" + video_id
 
 	// pull file from S3
 	err = repo.s3.FGetObject("videos", file_path, video_path, minio.GetObjectOptions{})
