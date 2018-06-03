@@ -21,7 +21,7 @@ func (srv *service) Encode(ctx context.Context, req *pb.Request, res *pb.Respons
 	logger.Info("Request for Encode_Service received")
 	defer sp.Finish()
 
-	rsp, err := srv.repo.Encode(sp.Context(), req.VideoId)
+	rsp, err := srv.repo.Encode(ctx, req)
 	if err != nil {
 		logger.Error("failed Encode", zap.Error(err))
 		return err

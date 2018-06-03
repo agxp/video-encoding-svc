@@ -4,6 +4,7 @@ import (
 	pb "github.com/agxp/cloudflix/video-encoding-svc/proto"
 	"github.com/micro/go-micro"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
+	_ "github.com/micro/go-plugins/broker/rabbitmq"
 	micro_opentracing "github.com/micro/go-plugins/wrapper/trace/opentracing"
 	"github.com/opentracing/opentracing-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
@@ -12,6 +13,11 @@ import (
 	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"time"
+	"github.com/micro/go-micro/broker"
+	"fmt"
+	"log"
+	"github.com/micro/go-plugins/broker/rabbitmq"
+	"context"
 )
 
 var (
@@ -85,7 +91,27 @@ func main() {
 	srv.Init()
 
 	// Will comment this out now to save having to run this locally
-	// publisher := micro.NewPublisher("user.created", srv.Client())
+	//micro.RegisterSubscriber("encoder_pubsub", srv.Server(), repo.Encode)
+
+	r := rabbitmq.NewBroker(broker.Addrs("amqp://admin:password@rabbit-rabbitmq:5672"))
+
+	if err := r.Init(); err != nil {
+		log.Fatalf("Broker Init error: %v", err)
+	}
+	if err := r.Connect(); err != nil {
+		log.Fatalf("Broker Connect error: %v", err)
+	}
+
+	_, err = r.Subscribe("service.topic", func(p broker.Publication) error {
+		repo.Encode(context.Background(), &pb.Request{
+			VideoId: string(p.Message().Body),
+		})
+		fmt.Println("[sub] received message:", string(p.Message().Body), "header", p.Message().Header)
+		return nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Register handler
 	pb.RegisterEncodeHandler(srv.Server(), &service{repo, tracer, zapLogger})
