@@ -25,7 +25,7 @@ type EncodeRepository struct {
 }
 
 func GetResolution(video_path string) string {
-	return "1280x720"
+	return "1920x1080"
 }
 
 func (repo *EncodeRepository) GenerateThumb(video_id string, video_path string)  {
