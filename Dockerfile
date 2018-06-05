@@ -1,6 +1,4 @@
-FROM alpine:latest
-
-RUN apk --no-cache add ca-certificates ffmpeg
+FROM jrottenberg/ffmpeg:4.0-ubuntu
 
 WORKDIR /tmp
 
@@ -8,4 +6,4 @@ RUN mkdir /app
 WORKDIR /app
 COPY ./bin/encoder .
 
-CMD ["./encoder"]
+ENTRYPOINT ["./encoder"]

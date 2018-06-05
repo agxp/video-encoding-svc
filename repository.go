@@ -25,6 +25,45 @@ type EncodeRepository struct {
 }
 
 func GetResolution(video_path string) string {
+	trans := new(transcoder.Transcoder)
+
+	// Initialize transcoder passing the input file path and output file path
+	err := trans.Initialize( video_path, "null.mp4" )
+	// Handle error...
+	if err != nil {
+		log.Println(err)
+		return "1280x720"
+	}
+
+	if trans.MediaFile().Metadata().Streams != nil {
+		for i := range trans.MediaFile().Metadata().Streams {
+			log.Println("Width", trans.MediaFile().Metadata().Streams[i].Width)
+			log.Println("Height", trans.MediaFile().Metadata().Streams[i].Height)
+		}
+	}
+
+	trans.MediaFile().SetDuration("00:00:01")
+
+	// Start transcoder process
+	done, err := trans.Run()
+	if err != nil {
+		log.Println(err)
+		return "1280x720"
+	}
+
+	progress, err := trans.Output()
+	if err != nil {
+		log.Println(err)
+		return "1280x720"
+	}
+
+	for msg := range progress {
+		log.Println(msg)
+	}
+
+	// This channel is used to wait for the process to end
+	<-done
+
 	return "1920x1080"
 }
 
